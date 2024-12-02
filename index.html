@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Birthday Cake</title>
+<<style>
+  @import url("https://fonts.googleapis.com/css2?family=Cookie&family=Rouge+Script&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;1,700&display=swap");
+*, *:before, *:after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  background-image: linear-gradient(to left bottom, #6441a5, #56328b, #472473, #39165b, #2a0845);
+  /*background-image: linear-gradient(to left bottom, #ce9ffc, #bb90f9, #a781f5, #8f74f3, #7367f0);*/
+}
+
+.svg {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.candle-container, .plate, .wrapper {
+  display: grid;
+  place-items: center;
+}
+
+#canvas {
+  position: absolute;
+  z-index: 9;
+  width: 100%;
+  height: 100%;
+}
+
+.wrapper {
+  position: relative;
+  min-height: 100vh;
+  /*min-height: 100vh;
+  min-height: 600px;*/
+  /*  background: linear-gradient(to top, #eee, transparent);*/
+  background-image: linear-gradient(to left bottom, #6441a5, #56328b, #472473, #39165b, #2a0845);
+}
+
+.greeting {
+  font-family: "Cookie", cursive;
+  font-size: 4rem;
+  color: #e5c649;
+  text-align: center;
+  transform: scale(0);
+}
+
+.message {
+  font-family: "Cookie", cursive;
+  font-size: 2.5rem;
+  color: #777;
+}
+
+.plate {
+  position: relative;
+  width: 250px;
+  height: 75px;
+  background: #f1f1f1;
+  margin-top: 0;
+  border-radius: 50%;
+  box-shadow: 0px 3px 5px 0px #aaa;
+}
+
+.cake-wrap {
+  position: absolute;
+  bottom: 50%;
+}
+
+.cake-base {
+  position: relative;
+  width: 200px;
+  height: 50px;
+  background: #c5a5c0;
+}
+.cake-base .base-front {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: inherit;
+}
+.cake-base .base-front:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  height: 55px;
+  transform: translatey(-50%);
+  background: inherit;
+  border-radius: 50%;
+}
+.cake-base .base-top {
+  position: absolute;
+  width: 100%;
+  height: 65px;
+  top: 0;
+  transform: translatey(-50%);
+  border-radius: 50%;
+  background: inherit;
+}
+.cake-base .base-top:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  clip-path: polygon(0 0, 0% 50%, 100% 50%, 100% 0);
+}
+.cake-base .base-top:after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border-bottom-color: black;
+  clip-path: polygon(0 50%, 60% 50%, 60% 101%, 0 101%);
+}
+
+.cake-topping {
+  position: absolute;
+  bottom: 0%;
+  width: 200px;
+  height: 100px;
+  z-index: 99;
+}
+.cake-topping .topping-front {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #b381ae 40%, transparent);
+}
+.cake-topping .topping-front .top-layer {
+  height: 30%;
+  background: #b381ae;
+}
+.cake-topping .topping-front .bottom-layer {
+  position: relative;
+  height: 70%;
+  background: #b381ae;
+  clip-path: url("#my-clip-path");
+}
+.cake-topping .topping-top {
+  background: #b381ae;
+  position: absolute;
+  width: 100%;
+  height: 65px;
+  top: 0;
+  transform: translatey(-50%);
+  border-radius: 50%;
+  z-index: 9;
+}
+.cake-topping .topping-top:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  clip-path: polygon(0 0, 0% 50%, 100% 50%, 100% 0);
+}
+.cake-topping .topping-top:after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: inset 0 -1px 1px 2px rgba(200, 169, 195, 0.5);
+  clip-path: polygon(10% 50%, 70% 50%, 70% 101%, 10% 101%);
+}
+
+.candle-container {
+  width: 200px;
+  position: absolute;
+  /* bottom: 60%;*/
+  bottom: 161%;
+  z-index: 9999;
+  opacity: 0;
+}
+.candle-container .candle-wrap {
+  position: relative;
+  width: 15px;
+}
+.candle-container .flame-wrap {
+  position: relative;
+  z-index: 99;
+  width: 100%;
+  background: #fcc56c;
+  height: 30px;
+  transform-origin: bottom center;
+  transform: scale(0);
+  clip-path: url(#my-flame-path);
+}
+.candle-container .candle-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translatey(-50%);
+  width: 100%;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  z-index: 9;
+  background: radial-gradient(#eee, #f0abf0);
+}
+.candle-container .candle-base {
+  position: relative;
+  width: 100%;
+  height: 75px;
+  margin: 2px 0;
+  background: repeating-linear-gradient(45deg, #eee, #f0abf0 20%);
+}
+.candle-container .candle-base:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background: #eee;
+  transform: translateY(50%);
+  height: 5px;
+  width: 100%;
+  z-index: -1;
+  border-radius: 50%;
+}
+.candle-container .candle-base:after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 50%);
+  height: 10px;
+  width: 200%;
+  border-radius: 50%;
+  background: radial-gradient(#9e7199, #b381ae);
+  z-index: -2;
+}
+.candle-container .star {
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  background-color: #ffd213;
+  clip-path: url(#my-star-path);
+  opacity: 0;
+}
+.candle-container .star:nth-of-type(1) {
+  top: -20%;
+  left: 30%;
+}
+.candle-container .star:nth-of-type(2) {
+  top: 30%;
+  left: 10%;
+}
+.candle-container .star:nth-of-type(3) {
+  top: -10%;
+  left: 78%;
+}
+.candle-container .star:nth-of-type(4) {
+  top: 35%;
+  left: 65%;
+}
+.candle-container .star:nth-of-type(5) {
+  top: 55%;
+  left: 90%;
+}
+
+/* ============================================== Candle
+*/
+.velas {
+  background: #ffffff;
+  border-radius: 10px;
+  position: relative;
+  /* position: absolute;
+   top: 319px;
+   left: 50%;
+   margin-left: -2.4px;
+   margin-top: -8.33333333px;*/
+  width: 9px;
+  height: 53px;
+  /*transform: translateY(-300px);*/
+  transform: translateY(65px);
+  backface-visibility: hidden;
+  animation: in 500ms 6s ease-out forwards;
+}
+
+.velas:after,
+.velas:before {
+  background: rgba(255, 0, 0, 0.4);
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2.22222222px;
+}
+
+.velas:after {
+  top: 25%;
+  left: 0;
+}
+
+.velas:before {
+  top: 45%;
+  left: 0;
+}
+
+/* ============================================== Fire
+*/
+.fuego {
+  border-radius: 100%;
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  margin-left: -2.6px;
+  width: 6.66666667px;
+  height: 18px;
+}
+
+.fuego:nth-child(1) {
+  animation: fuego 2s 6.5s infinite;
+}
+
+.fuego:nth-child(2) {
+  animation: fuego 1.5s 6.5s infinite;
+}
+
+.fuego:nth-child(3) {
+  animation: fuego 1s 6.5s infinite;
+}
+
+.fuego:nth-child(4) {
+  animation: fuego 0.5s 6.5s infinite;
+}
+
+.fuego:nth-child(5) {
+  animation: fuego 0.2s 6.5s infinite;
+}
+
+/* ============================================== Animation Fire
+*/
+@keyframes fuego {
+  0%, 100% {
+    background: rgba(254, 248, 97, 0.5);
+    box-shadow: 0 0 40px 10px rgba(248, 233, 209, 0.2);
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    background: rgba(255, 50, 0, 0.1);
+    box-shadow: 0 0 40px 20px rgba(248, 233, 209, 0.2);
+    transform: translateY(-20px) scale(0);
+  }
+}
+/**/
+.confetti {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  position: absolute;
+  z-index: 9;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 8px;
+  height: 16px;
+  background: #ffd300;
+  top: 0;
+  opacity: 0;
+}
+.confetti-piece:nth-child(1) {
+  left: 7%;
+  transform: rotate(-20deg);
+  animation: makeItRain 1000ms infinite ease-out;
+  animation-delay: 6ms;
+  animation-duration: 710ms;
+}
+.confetti-piece:nth-child(2) {
+  left: 14%;
+  transform: rotate(63deg);
+  animation: makeItRain 1000ms infinite ease-out;
+  animation-delay: 167ms;
+  animation-duration: 746ms;
+}
+.confetti-piece:nth-child(3) {
+  left: 21%;
+  transform: rotate(-37deg);
+  animation: makeItRain 1000ms infinite ease-out;
+  animation-delay: 14ms;
+  animation-duration: 855ms;
+}
+.confetti-piece:nth-child(4) {
+  left: 28%;
+  transform: rotate(61deg);
+  animation: makeItRain 1000ms infinite ease-out;
+  animation-delay: 443ms;
+  animation-duration: 778ms;
+}
+.confetti-piece:nth-child(5) {
+  left: 35%;
+  transform: rotate(-59deg);
+  animation: makeItRain 1000ms infinite ease-out;
+  animation-delay: 246ms;
+  animation-duration: 999ms;
+}
+.confetti-piece:nth-child(6) {
+  left: 42%;
+  transform: rotate(56deg);
+  animation: makeItRain 1000ms infinite ease-out;
+  animation-delay: 447ms;
+  animation-duration: 727ms;
+}
+.confetti-piece:nth-child(7) {
+  left: 49%;
+  transform: rotate(-16deg);
+  animation: makeItRain 1000ms infinite ease-out;
+  animation-delay: 29ms;
+  animation-duration: 1162ms;
+}
+.confetti-piece:nth-child(8) {
+  left: 56%;
+  transform: rotate(-71deg);
+  animation: makeItRain 1000ms infinite ease-out;
+  animation-delay: 181ms;
+  animation-duration: 1071ms;
+}
+.confetti-piece:nth-child(9) {
+  left: 63%;
+  transform: rotate(17deg);
+  animation: makeItRain 1000ms infinite ease-out;
+  animation-delay: 134ms;
+  animation-duration: 1168ms;
+}
+.confetti-piece:nth-child(10) {
+  left: 70%;
+  transform: rotate(-73deg);
+  animation: makeItRain 1000ms infinite ease-out;
+  animation-delay: 448ms;
+  animation-duration: 1120ms;
+}
+.confetti-piece:nth-child(11) {
+  left: 77%;
+  transform: rotate(-38deg);
+  animation: makeItRain 1000ms infinite ease-out;
+  animation-delay: 149ms;
+  animation-duration: 1072ms;
+}
+.confetti-piece:nth-child(12) {
+  left: 84%;
+  transform: rotate(58deg);
+  animation: makeItRain 1000ms infinite ease-out;
+  animation-delay: 341ms;
+  animation-duration: 1008ms;
+}
+.confetti-piece:nth-child(13) {
+  left: 91%;
+  transform: rotate(-62deg);
+  animation: makeItRain 1000ms infinite ease-out;
+  animation-delay: 341ms;
+  animation-duration: 868ms;
+}
+.confetti-piece:nth-child(odd) {
+  background: #17d3ff;
+}
+.confetti-piece:nth-child(even) {
+  z-index: 1;
+}
+.confetti-piece:nth-child(4n) {
+  width: 5px;
+  height: 12px;
+  animation-duration: 2000ms;
+}
+.confetti-piece:nth-child(3n) {
+  width: 3px;
+  height: 10px;
+  animation-duration: 2500ms;
+  animation-delay: 1000ms;
+}
+.confetti-piece:nth-child(4n-7) {
+  background: #ff4e91;
+}
+
+@keyframes makeItRain {
+  from {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(200px);
+  }
+}
+/*Modal*/
+/* Container to hold both elements */
+.container {
+  display: flex;
+  justify-content: center; /* Align items horizontally in the center */
+  gap: 10px; /* Add space between the button and the link */
+  margin-top: 20px; /* Optional: Adds some space at the top */
+}
+
+/* Styling for the modal button */
+.modal-button {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  background-color: #f2f2f2;
+  width: 170px;
+  padding: 13px 0;
+  font-size: 16px;
+  text-shadow: 0px 0px #000000ab;
+  border: 0;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+/* Styling for the kado link */
+.kado {
+  display: inline-block; /* Treat it like a block-level element for alignment */
+  text-align: center;
+  background-color: #f2f2f2;
+  width: 170px;
+  padding: 13px 0;
+  font-size: 16px;
+  text-shadow: 0px 0px #000000ab;
+  border: 0;
+  border-radius: 14px;
+  text-decoration: none; /* Remove underline from link */
+  color: inherit; /* Inherit the font color */
+  cursor: pointer;
+}
+
+
+.modal {
+  background-color: #4c3089;
+  border-radius: 14px;
+  margin: auto;
+  padding: 40px 15px;
+  min-width: 290px;
+  position: relative;
+  font-family: "Lato", sans-serif;
+  color: #dbd3a4;
+}
+
+.modal__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background-color: transparent;
+}
+
+.modal__title {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 120%;
+  text-align: center;
+  color: #dbb632;
+  margin: 0 auto 30px;
+}
+
+.page__overlay {
+  position: fixed;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  overflow: auto;
+  padding: 15px;
+  display: flex;
+}
+
+.page__overlay_modal {
+  display: none;
+}
+
+.modal__text {
+  max-width: 560px;
+  padding: 0 73px;
+}
+
+.modal__text p {
+  margin-bottom: 30px;
+}
+
+.modal__footer {
+  text-align: right;
+  padding: 15px 0;
+  border-top: 1px solid #8b78ef;
+}
+
+@media (max-width: 520px) {
+  .modal__text {
+    max-width: 90%;
+    padding: 0 18px;
+  }
+
+  .modal__title {
+    text-align: left;
+    margin: 0 auto 15px;
+  }
+
+  .modal__text {
+    max-width: 100%;
+    padding: 0;
+    font-size: 15px;
+  }
+
+  .modal__text {
+    margin-bottom: 15px;
+  }
+}
+</style>
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="confetti">
+  <div class="confetti-piece"></div>
+  <div class="confetti-piece"></div>
+  <div class="confetti-piece"></div>
+  <div class="confetti-piece"></div>
+  <div class="confetti-piece"></div>
+  <div class="confetti-piece"></div>
+  <div class="confetti-piece"></div>
+  <div class="confetti-piece"></div>
+  <div class="confetti-piece"></div>
+  <div class="confetti-piece"></div>
+  <div class="confetti-piece"></div>
+  <div class="confetti-piece"></div>
+  <div class="confetti-piece"></div>
+</div>
+<!--<canvas id="canvas"></canvas>-->
+
+<div class="wrapper">
+  <div class="greeting">Happy Birthday, <br> Dahlia</div>
+  <div class="plate">
+    <div class="cake-wrap">
+      <div class="cake-topping">
+        <div class="topping-top">
+          <div class="candle-container">
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <div class="star"></div>
+            <!--<div class="candle-wrap">
+              <div class="flame-wrap"></div>
+              <div class="candle-base">
+                <div class="candle-top"></div>
+              </div>
+            </div>-->
+            <div class="velas">
+    <div class="fuego"></div>
+    <div class="fuego"></div>
+    <div class="fuego"></div>
+    <div class="fuego"></div>
+    <div class="fuego"></div>
+</div>
+          </div>
+        </div>
+        <div class="topping-front">
+          <div class="top-layer"></div>
+          <div class="bottom-layer"></div>
+        </div>
+      </div>
+      <div class="cake-base">
+        <div class="base-front"></div>
+        <div class="base-top"></div>
+      </div>
+      
+    </div>
+    </div>
+ <div class="container">
+  <button class="modal-button">Click Me</button>
+  <a href="kado.html" class="kado">Kado</a>
+</div>
+
+
+  
+  <!-- -->
+<div class="page__overlay page__overlay_modal">
+    <div class="modal">
+      <h2 class="modal__title">Selamat Ulang Tahun
+     </h2>
+      <div class="modal__text">
+        <p>Hi Dahlia</p>
+        <p>Cie sekarang Dahlia makin tua, semoga apa yang ingin kamu capai dalam hidup ini bisa segera terwujud dengan penuh kebahagiaan. Jangan lupa untuk selalu berusaha mencapai impian dan tujuan hidupmu, karena setiap langkah kecil akan membawa kamu lebih dekat ke sana. Tetap semangat dalam menjalani setiap hari, meskipun ada banyak tantangan di depan, tetaplah percaya pada diri sendiri dan jangan ragu untuk mengambil kesempatan yang ada.</p>
+
+<p>Tetap jadi orang yang baik ya, selalu berbagi kebaikan kepada orang di sekitarmu. Dunia butuh lebih banyak orang dengan hati yang tulus seperti kamu. Jangan lupa juga untuk menjaga kesehatan tubuh dan pikiran, karena itu adalah aset terpenting. Cobalah untuk lebih merawat diri sendiri, tidur cukup, makan dengan seimbang, dan jangan terlalu banyak menunda istirahat, meskipun kadang kesibukan membuatmu melupakan itu. Kurangi juga, ya, overthinking dan nangisnya. Terkadang, berbicara dengan orang lain atau sekadar memberi waktu untuk diri sendiri bisa sangat membantu melepaskan beban pikiran.</p>
+
+<p>Kalau ada apa-apa, jangan ragu untuk cerita ke aku. Aku selalu ada di sini untuk mendengarkan dan memberikan dukungan. Ingat, kita semua punya perjalanan masing-masing, dan tidak ada yang salah dengan meminta bantuan saat dibutuhkan. Semoga kamu bahagia terus dan selalu merasa dikelilingi oleh orang-orang yang peduli dan mencintaimu. Semoga setiap hari membawa kebahagiaan yang lebih besar, dan kamu selalu dikelilingi oleh hal-hal positif yang memotivasi kamu untuk terus maju. Selamat ulang tahun, Dahlia! Semoga tahun ini menjadi tahun yang penuh dengan pencapaian dan kebahagiaan!</p>
+
+        <div class="modal__footer">from J</div>
+        
+      </div>
+
+      <button class="modal__close">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="29.1681" height="1.94454" rx="0.972271" transform="matrix(0.707106 -0.707107 0.707106 0.707107 0 20.625)" fill="#dbd3a4"></rect>
+          <rect width="29.1681" height="1.94454" rx="0.972271" transform="matrix(0.707106 0.707107 -0.707106 0.707107 1.375 0)" fill="#dbd3a4"></rect>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+  
+<svg class="svg">
+  <clipPath id="my-clip-path" clipPathUnits="objectBoundingBox"><path d="M0,0 V0.481 s0.021,0.37,0.078,0.404 s0.035,-0.296,0.102,-0.27 s0.007,0.363,0.096,0.354 s0.028,-0.466,0.1,-0.487 S0.406,0.999,0.457,0.999 s0.03,-0.502,0.075,-0.518 s0.041,0.488,0.081,0.274 c0.007,-0.038,0.021,-0.187,0.044,-0.215 c0.014,-0.017,0.038,0.401,0.075,0.392 s0.023,-0.28,0.074,-0.392 c0.022,-0.04,0.072,0.359,0.1,0.344 c0.057,-0.029,0.094,-0.405,0.094,-0.405 V-0.001"></path></clipPath>
+  <clipPath id="my-flame-path" clipPathUnits="objectBoundingBox"><path d="M0.501,0 s0.188,0.101,0.295,0.238 s0.123,0.15,0.169,0.286 S1,0.74,0.928,0.838 S0.711,1,0.501,1 S0.216,0.937,0.09,0.838 s-0.083,-0.149,0,-0.29 s0.23,-0.139,0.333,-0.276 S0.501,0,0.501,0"></path></clipPath>
+  <clipPath id="my-star-path" clipPathUnits="objectBoundingBox"><path d="M0.5,0.846 l-0.309,0.154,0.044,-0.357 L0,0.382 l0.336,-0.067 L0.5,0 l0.164,0.315,0.336,0.067,-0.235,0.261,0.044,0.357"></path></clipPath>
+</svg>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.4.2/gsap.min.js'></script>
+<<script>
+  const timeline = gsap.timeline({
+  duration: 0.3 });
+
+
+timeline.fromTo('.cake-topping', {
+  yPercent: -300,
+  opacity: 0.5 },
+{
+  yPercent: 0,
+  opacity: 1 });
+
+
+timeline.to('.candle-container', {
+  opacity: 1 });
+
+
+timeline.to('.flame-wrap', {
+  scale: 1,
+  ease: "back.out" });
+
+
+timeline.to('.greeting', {
+  scale: 1,
+  ease: "back.out" });
+
+
+timeline.to('.star', {
+  opacity: 1,
+  stagger: 0.05,
+  onComplete: function () {
+    gsap.to('.star', {
+      scale: 0.25,
+      repeat: -1,
+      stagger: 0.1,
+      yoyo: true,
+      yoyoEase: "power1.out" });
+
+  } });
+
+
+/*Fireworks*/
+/*
+// fun options!
+const PARTICLES_PER_FIREWORK = 150; // 100 - 400 or try 1000
+const FIREWORK_CHANCE = 0.02; // percentage, set to 0 and click instead
+const BASE_PARTICLE_SPEED = 0.6; // between 0-4, controls the size of the overall fireworks
+const FIREWORK_LIFESPAN = 600; // ms
+const PARTICLE_INITIAL_SPEED = 4.5; // 2-8
+
+// not so fun options =\
+const GRAVITY = 9.8;
+
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let particles = [];
+let disableAutoFireworks = false;
+let resetDisable = 0;
+
+let loop = () => {
+  
+  if (!disableAutoFireworks && Math.random() < FIREWORK_CHANCE) {
+    createFirework();
+  }
+  
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  particles.forEach((particle, i) => {
+    particle.animate();
+    particle.render();
+    if (particle.y > canvas.height 
+        || particle.x < 0 
+        || particle.x > canvas.width
+        || particle.alpha <= 0
+       ) {
+      particles.splice(i, 1);
+    }
+  });
+  
+  requestAnimationFrame(loop);
+  
+};
+
+let createFirework = (
+    x = Math.random() * canvas.width,
+    y = Math.random() * canvas.height
+  ) => {
+  
+  let speed = (Math.random() * 2) + BASE_PARTICLE_SPEED;
+  let maxSpeed = speed;
+
+  let red = ~~(Math.random() * 255);
+  let green = ~~(Math.random() * 255);
+  let blue = ~~(Math.random() * 255);
+  
+  // use brighter colours
+  red = (red < 150 ? red + 150 : red);
+  green = (green < 150 ? green + 150 : green);
+  blue = (blue < 150 ? blue + 150 : blue);
+
+  // inner firework
+  for (let i = 0; i < PARTICLES_PER_FIREWORK; i++) {
+    let particle = new Particle(x, y, red, green, blue, speed);
+    particles.push(particle);
+
+    maxSpeed = (speed > maxSpeed ? speed : maxSpeed);
+  }
+
+  // outer edge particles to make the firework appear more full
+  for (let i = 0; i < 40; i++) {
+    let particle = new Particle(x, y, red, green, blue, maxSpeed, true);
+    particles.push(particle);
+  }
+  
+};
+
+class Particle {
+  
+  constructor(
+    x = 0,
+    y = 0, 
+    red = ~~(Math.random() * 255), 
+    green = ~~(Math.random() * 255), 
+    blue = ~~(Math.random() * 255), 
+    speed, 
+    isFixedSpeed
+  ) {
+    
+    this.x = x;
+    this.y = y;
+    this.red = red;
+    this.green = green;
+    this.blue = blue;
+    this.alpha = 0.05;
+    this.radius = 1 + Math.random();
+    this.angle = Math.random() * 360;
+    this.speed = (Math.random() * speed) + 0.1;
+    this.velocityX = Math.cos(this.angle) * this.speed;
+    this.velocityY = Math.sin(this.angle) * this.speed;
+    this.startTime = (new Date()).getTime();
+    this.duration = Math.random() * 300 + FIREWORK_LIFESPAN;
+    this.currentDiration = 0;
+    this.dampening = 30; // slowing factor at the end
+    
+    this.colour = this.getColour();
+    
+    if (isFixedSpeed) {
+      this.speed = speed;
+      this.velocityY = Math.sin(this.angle) * this.speed;
+      this.velocityX = Math.cos(this.angle) * this.speed;
+    }
+    
+    this.initialVelocityX = this.velocityX;
+    this.initialVelocityY = this.velocityY;
+
+  }
+  
+  animate() {
+    
+    this.currentDuration = (new Date()).getTime() - this.startTime;
+    
+    // initial speed kick
+    if (this.currentDuration <= 200) {
+      
+      this.x += this.initialVelocityX * PARTICLE_INITIAL_SPEED;
+      this.y += this.initialVelocityY * PARTICLE_INITIAL_SPEED;
+      this.alpha += 0.01;
+
+      this.colour = this.getColour(240, 240, 240, 0.9);
+      
+    } else {
+      
+      // normal expansion
+      this.x += this.velocityX;
+      this.y += this.velocityY;
+      this.colour = this.getColour(this.red, this.green, this.blue, 0.4 + (Math.random() * 0.3));
+      
+    }
+    
+    this.velocityY += GRAVITY / 1000;
+    
+    // slow down particles at the end
+    if (this.currentDuration >= this.duration) {
+      this.velocityX -= this.velocityX / this.dampening; 
+      this.velocityY -= this.velocityY / this.dampening;
+    }
+    
+    if (this.currentDuration >= this.duration + this.duration / 1.1) {
+      
+      // fade out at the end
+      this.alpha -= 0.02;
+      this.colour = this.getColour();
+      
+    } else {
+      
+      // fade in during expansion
+      if (this.alpha < 1) {
+        this.alpha += 0.03;
+      }
+      
+    }
+  }
+  
+  render() {
+    
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+    ctx.lineWidth = this.lineWidth;
+    ctx.fillStyle = this.colour;
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = this.getColour(this.red + 150, this.green + 150, this.blue + 150, 1);
+    ctx.fill();
+    
+  }
+  
+  getColour(red, green, blue, alpha) {
+    
+    return `rgba(${red || this.red}, ${green || this.green}, ${blue || this.blue}, ${alpha || this.alpha})`;
+    
+  }
+  
+}
+
+let updateCanvasSize = () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+};
+
+
+// run it!
+
+updateCanvasSize();
+$(window).resize(updateCanvasSize);
+$(canvas).on('click', (e) => {
+  
+  createFirework(e.clientX, e.clientY);
+  
+  // stop fireworks when clicked, re-enable after short time
+  disableAutoFireworks = true;
+  clearTimeout(resetDisable);
+  resetDisable = setTimeout(() => {
+    disableAutoFireworks = false;
+  }, 5000);
+  
+});
+
+loop();*/
+
+
+/*Modal*/
+
+$(".modal-button").click(() => {
+  $(".page__overlay_modal").fadeIn(400).css("display", "flex");
+  let audio = new Audio('happy-birthday-155461.mp3'); // Set the source directly when creating the Audio object
+audio.autoplay = true; // Automatically play the audio
+
+audio.play().catch(error => {
+  console.error("Audio play failed: ", error); // Handle errors in case autoplay is blocked
+});
+ // Автоматически запускаем
+});
+
+
+
+$(".modal__close").click(() => {
+  $(".page__overlay_modal").fadeOut(400);
+});
+
+$(".page__overlay").click(event => {
+  if ($(event.target).hasClass("page__overlay")) {
+    $(".page__overlay_modal").fadeOut(400);
+  }
+});
+
+/*Audio*/
+</script>
+</body>
+</html>
